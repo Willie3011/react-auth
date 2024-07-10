@@ -5,22 +5,33 @@ import Button from 'react-bootstrap/Button';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
+import { useAuth } from '../../../context/AuthContext'; 
+
 function Signup() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [error, setError] = useState("");
-    
-    function handleSubmit(e) {
+    const { signup } = useAuth();
+
+
+    async function handleSubmit(e) {
         e.preventDefault();
         
-        setError("");
         //Check if Password Matches 
         if (password !== confirmPassword) {
-            setError("Passwords do not match");
+            return setError("Passwords do not match");
+        }
+        
+        try {
+            setError("");
+            await signup(email, password)
+            
+        }
+        catch (error) {
+            setError("Failed to create an account " + error)
         }
 
-        
     }
 
     return (
